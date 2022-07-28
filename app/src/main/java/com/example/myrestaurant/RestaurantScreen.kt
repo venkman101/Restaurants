@@ -27,10 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun RestaurantScreen() {
     val viewModel: RestaurantViewModel = viewModel()
-    val state: MutableState<List<Restaurant>> =
-        remember {
-            mutableStateOf(viewModel.getRestaurants())
-        }
+
     LazyColumn(
         contentPadding = PaddingValues(
             vertical = 8.dp,
@@ -38,13 +35,10 @@ fun RestaurantScreen() {
         )
     )
     {
-        items(state.value) { restaurant ->
-            RestaurantItem(restaurant){id1 ->
-                val restaurants = state.value.toMutableList()
-                val itemIndex = restaurants.indexOfFirst { it.id == id1 }
-                val item = restaurants[itemIndex]
-                restaurants[itemIndex] = item.copy(isFavorite = !item.isFavorite)
-                state.value = restaurants
+        items(viewModel.state.value) { restaurant ->
+            RestaurantItem(restaurant) { id ->
+                viewModel.toggleFavorite(id)
+                println(id)
             }
         }
     }
